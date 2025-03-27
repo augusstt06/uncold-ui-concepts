@@ -15,7 +15,7 @@ class _ScanProcessingStepState extends State<ScanProcessingStep>
   late AnimationController _progressController;
   late AnimationController _bounceController;
   late Animation<double> _rotationAnimation;
-  late Animation<double> _bounceAnimation;
+
   String _previousStage = 'research';
   bool _isRotating = false;
 
@@ -55,23 +55,6 @@ class _ScanProcessingStepState extends State<ScanProcessingStep>
     _rotationAnimation = Tween<double>(begin: 0, end: 90).animate(
       CurvedAnimation(parent: _progressController, curve: Curves.easeInOut),
     );
-
-    _bounceAnimation = TweenSequence<double>([
-      TweenSequenceItem(
-        tween: Tween<double>(
-          begin: 1.0,
-          end: 1.05,
-        ).chain(CurveTween(curve: Curves.easeInOut)),
-        weight: 50,
-      ),
-      TweenSequenceItem(
-        tween: Tween<double>(
-          begin: 1.05,
-          end: 1.0,
-        ).chain(CurveTween(curve: Curves.easeInOut)),
-        weight: 50,
-      ),
-    ]).animate(_bounceController);
 
     _pulseController = AnimationController(
       duration: const Duration(milliseconds: 1500),
@@ -152,7 +135,6 @@ class _ScanProcessingStepState extends State<ScanProcessingStep>
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            // 제목
             const Text(
               'Processing Your Business Card',
               textAlign: TextAlign.center,
@@ -160,7 +142,6 @@ class _ScanProcessingStepState extends State<ScanProcessingStep>
             ),
             const Gap(60),
 
-            // 메인 컨텐츠 블록
             Container(
               constraints: const BoxConstraints(minHeight: 320, maxWidth: 400),
               decoration: BoxDecoration(
@@ -180,7 +161,6 @@ class _ScanProcessingStepState extends State<ScanProcessingStep>
                 mainAxisAlignment: MainAxisAlignment.center,
                 mainAxisSize: MainAxisSize.max,
                 children: [
-                  // 상단 아이콘
                   Container(
                     width: kIconContainerSize,
                     height: kIconContainerSize,
@@ -208,7 +188,6 @@ class _ScanProcessingStepState extends State<ScanProcessingStep>
                   ),
                   const Gap(32),
 
-                  // 진행 상태 인디케이터
                   SizedBox(
                     height: 8,
                     child: Row(
@@ -224,7 +203,6 @@ class _ScanProcessingStepState extends State<ScanProcessingStep>
                   ),
                   const Gap(24),
 
-                  // 현재 단계 표시
                   SizedBox(
                     height: 80,
                     child: AnimatedSwitcher(
@@ -243,7 +221,6 @@ class _ScanProcessingStepState extends State<ScanProcessingStep>
             ),
             const Gap(40),
 
-            // 하단 설명 텍스트
             Text(
               'uncold.ai is analyzing your business card and preparing personalized follow-up suggestions.',
               textAlign: TextAlign.center,
@@ -323,7 +300,6 @@ class _ScanProcessingStepState extends State<ScanProcessingStep>
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          // 원 아이콘 부분 (펄스 효과)
           SizedBox(
             width: kStageIndicatorSize,
             height: kStageIndicatorSize,
@@ -385,7 +361,6 @@ class _ScanProcessingStepState extends State<ScanProcessingStep>
             ),
           ),
           const SizedBox(width: 12),
-          // 텍스트 부분 (바운싱 제거)
           Flexible(
             child: Text(
               stageLabels[stage] ?? 'Unknown stage',
