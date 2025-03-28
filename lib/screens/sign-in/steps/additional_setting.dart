@@ -20,7 +20,7 @@ class AdditionalSettingStep extends ConsumerStatefulWidget {
 }
 
 class _AdditionalSettingStepState extends ConsumerState<AdditionalSettingStep>
-    with SingleTickerProviderStateMixin {
+    with TickerProviderStateMixin {
   bool _isPasswordVisible = false;
   bool _isConfirmPasswordVisible = false;
 
@@ -42,6 +42,12 @@ class _AdditionalSettingStepState extends ConsumerState<AdditionalSettingStep>
 
   bool _isPasswordMatch = false;
 
+  late AnimationController _fadeController;
+  Animation<double> get _fadeAnimation => Tween<double>(
+    begin: 0.0,
+    end: 1.0,
+  ).animate(CurvedAnimation(parent: _fadeController, curve: Curves.easeInOut));
+
   @override
   void initState() {
     super.initState();
@@ -52,23 +58,50 @@ class _AdditionalSettingStepState extends ConsumerState<AdditionalSettingStep>
     _progressAnimation = Tween<double>(begin: 0, end: 0).animate(
       CurvedAnimation(parent: _progressController, curve: Curves.easeInOut),
     );
+
+    _fadeController = AnimationController(
+      duration: const Duration(milliseconds: 500),
+      vsync: this,
+      value: 1.0,
+    );
   }
 
   @override
   void dispose() {
     _progressController.dispose();
+    _fadeController.dispose();
     _passwordController.dispose();
     _confirmPasswordController.dispose();
     super.dispose();
   }
 
   void _validatePassword(String password) {
+    final bool wasValid =
+        _hasUpperCase &&
+        _hasNumber &&
+        _hasMinLength &&
+        _hasSpecialChar &&
+        _isPasswordMatch;
+
     setState(() {
       _hasUpperCase = password.contains(RegExp(r'[A-Z]'));
       _hasNumber = password.contains(RegExp(r'[0-9]'));
       _hasSpecialChar = password.contains(RegExp(r'[!@#$%^&*(),.?":{}|<>]'));
       _hasMinLength = password.length >= 8;
       _isPasswordMatch = password == _confirmPasswordController.text;
+
+      final bool isValid =
+          _hasUpperCase &&
+          _hasNumber &&
+          _hasMinLength &&
+          _hasSpecialChar &&
+          _isPasswordMatch;
+
+      if (wasValid && !isValid) {
+        _fadeController.forward();
+      } else if (isValid) {
+        _fadeController.reverse();
+      }
 
       final int metConditions =
           [
@@ -93,8 +126,28 @@ class _AdditionalSettingStepState extends ConsumerState<AdditionalSettingStep>
   }
 
   void _validateConfirmPassword(String confirmPassword) {
+    final bool wasValid =
+        _hasUpperCase &&
+        _hasNumber &&
+        _hasMinLength &&
+        _hasSpecialChar &&
+        _isPasswordMatch;
+
     setState(() {
       _isPasswordMatch = confirmPassword == _passwordController.text;
+
+      final bool isValid =
+          _hasUpperCase &&
+          _hasNumber &&
+          _hasMinLength &&
+          _hasSpecialChar &&
+          _isPasswordMatch;
+
+      if (wasValid && !isValid) {
+        _fadeController.forward();
+      } else if (isValid) {
+        _fadeController.reverse();
+      }
     });
   }
 
@@ -114,6 +167,13 @@ class _AdditionalSettingStepState extends ConsumerState<AdditionalSettingStep>
 
   @override
   Widget build(BuildContext context) {
+    final bool isPasswordValid =
+        _hasUpperCase &&
+        _hasNumber &&
+        _hasMinLength &&
+        _hasSpecialChar &&
+        _isPasswordMatch;
+
     return Column(
       children: [
         StepHeader(
@@ -152,9 +212,7 @@ class _AdditionalSettingStepState extends ConsumerState<AdditionalSettingStep>
                                     _hasSpecialChar &&
                                     _isPasswordMatch
                                 ? Colors.transparent
-                                : const Color(
-                                  0xFFFFEBEB,
-                                ), // required 상태일 때만 배경색
+                                : const Color(0xFFFFEBEB),
                         borderRadius: BorderRadius.circular(4),
                       ),
                       child:
@@ -163,7 +221,7 @@ class _AdditionalSettingStepState extends ConsumerState<AdditionalSettingStep>
                                   _hasMinLength &&
                                   _hasSpecialChar &&
                                   _isPasswordMatch
-                              ? const SizedBox.shrink() // 조건 만족하면 아무것도 표시 안 함
+                              ? const SizedBox.shrink()
                               : const Text(
                                 'Required',
                                 style: TextStyle(
@@ -255,168 +313,207 @@ class _AdditionalSettingStepState extends ConsumerState<AdditionalSettingStep>
                   ),
                 ),
                 const Gap(16),
-                Container(
-                  padding: const EdgeInsets.all(16),
-                  decoration: BoxDecoration(
-                    color:
-                        _hasUpperCase &&
-                                _hasNumber &&
-                                _hasMinLength &&
-                                _hasSpecialChar &&
-                                _isPasswordMatch
-                            ? const Color(0xFFF0FDF4)
-                            : const Color(0xFFFFEBEB),
-                    borderRadius: BorderRadius.circular(8),
-                    border: Border.all(
-                      color:
-                          _hasUpperCase &&
-                                  _hasNumber &&
-                                  _hasMinLength &&
-                                  _hasSpecialChar &&
-                                  _isPasswordMatch
-                              ? const Color(0xFF22C55E)
-                              : const Color(0xFFDC2626),
-                    ),
-                  ),
+                AnimatedSize(
+                  duration: const Duration(milliseconds: 500),
+                  curve: Curves.easeInOut,
                   child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Row(
-                        children: [
-                          Icon(
-                            _hasUpperCase &&
-                                    _hasNumber &&
-                                    _hasMinLength &&
-                                    _hasSpecialChar &&
-                                    _isPasswordMatch
-                                ? Icons.check_circle
-                                : Icons.error,
-                            size: 16,
-                            color:
-                                _hasUpperCase &&
-                                        _hasNumber &&
-                                        _hasMinLength &&
-                                        _hasSpecialChar &&
-                                        _isPasswordMatch
-                                    ? const Color(0xFF22C55E)
-                                    : const Color(0xFFDC2626),
+                      FadeTransition(
+                        opacity: _fadeAnimation,
+                        child: AnimatedContainer(
+                          duration: const Duration(milliseconds: 500),
+                          height: isPasswordValid ? 0 : null,
+                          margin: EdgeInsets.only(
+                            bottom: isPasswordValid ? 0 : 16,
                           ),
-                          const Gap(8),
-                          Text(
-                            'Password Requirements',
-                            style: TextStyle(
-                              fontSize: 14,
-                              fontWeight: FontWeight.w500,
+                          child: Container(
+                            padding: const EdgeInsets.all(16),
+                            decoration: BoxDecoration(
                               color:
                                   _hasUpperCase &&
                                           _hasNumber &&
                                           _hasMinLength &&
                                           _hasSpecialChar &&
                                           _isPasswordMatch
-                                      ? const Color(0xFF22C55E)
-                                      : const Color(0xFFDC2626),
+                                      ? const Color(0xFFF0FDF4)
+                                      : const Color(0xFFFFEBEB),
+                              borderRadius: BorderRadius.circular(8),
+                              border: Border.all(
+                                color:
+                                    _hasUpperCase &&
+                                            _hasNumber &&
+                                            _hasMinLength &&
+                                            _hasSpecialChar &&
+                                            _isPasswordMatch
+                                        ? const Color(0xFF22C55E)
+                                        : const Color(0xFFDC2626),
+                              ),
                             ),
+                            child:
+                                isPasswordValid
+                                    ? null
+                                    : Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Row(
+                                          children: [
+                                            Icon(
+                                              _hasUpperCase &&
+                                                      _hasNumber &&
+                                                      _hasMinLength &&
+                                                      _hasSpecialChar &&
+                                                      _isPasswordMatch
+                                                  ? Icons.check_circle
+                                                  : Icons.error,
+                                              size: 16,
+                                              color:
+                                                  _hasUpperCase &&
+                                                          _hasNumber &&
+                                                          _hasMinLength &&
+                                                          _hasSpecialChar &&
+                                                          _isPasswordMatch
+                                                      ? const Color(0xFF22C55E)
+                                                      : const Color(0xFFDC2626),
+                                            ),
+                                            const Gap(8),
+                                            Text(
+                                              'Password Requirements',
+                                              style: TextStyle(
+                                                fontSize: 14,
+                                                fontWeight: FontWeight.w500,
+                                                color:
+                                                    _hasUpperCase &&
+                                                            _hasNumber &&
+                                                            _hasMinLength &&
+                                                            _hasSpecialChar &&
+                                                            _isPasswordMatch
+                                                        ? const Color(
+                                                          0xFF22C55E,
+                                                        )
+                                                        : const Color(
+                                                          0xFFDC2626,
+                                                        ),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                        const Gap(12),
+                                        Column(
+                                          children: [
+                                            Row(
+                                              children: [
+                                                Expanded(
+                                                  child:
+                                                      _buildPasswordRequirement(
+                                                        '8+ Characters',
+                                                        _hasMinLength,
+                                                      ),
+                                                ),
+                                                Expanded(
+                                                  child:
+                                                      _buildPasswordRequirement(
+                                                        'Uppercase Letter',
+                                                        _hasUpperCase,
+                                                      ),
+                                                ),
+                                              ],
+                                            ),
+                                            const Gap(8),
+                                            Row(
+                                              children: [
+                                                Expanded(
+                                                  child:
+                                                      _buildPasswordRequirement(
+                                                        'Number',
+                                                        _hasNumber,
+                                                      ),
+                                                ),
+                                                Expanded(
+                                                  child:
+                                                      _buildPasswordRequirement(
+                                                        'Special Characters',
+                                                        _hasSpecialChar,
+                                                      ),
+                                                ),
+                                              ],
+                                            ),
+                                            const Gap(8),
+                                            Row(
+                                              children: [
+                                                Expanded(
+                                                  child:
+                                                      _buildPasswordRequirement(
+                                                        'Password Match',
+                                                        _isPasswordMatch,
+                                                      ),
+                                                ),
+                                                const Expanded(
+                                                  child: SizedBox(),
+                                                ),
+                                              ],
+                                            ),
+                                          ],
+                                        ),
+                                      ],
+                                    ),
                           ),
-                        ],
-                      ),
-                      const Gap(12),
-                      Column(
-                        children: [
-                          Row(
-                            children: [
-                              Expanded(
-                                child: _buildPasswordRequirement(
-                                  '8+ Characters',
-                                  _hasMinLength,
-                                ),
-                              ),
-                              Expanded(
-                                child: _buildPasswordRequirement(
-                                  'Uppercase Letter',
-                                  _hasUpperCase,
-                                ),
-                              ),
-                            ],
-                          ),
-                          const Gap(8),
-                          Row(
-                            children: [
-                              Expanded(
-                                child: _buildPasswordRequirement(
-                                  'Number',
-                                  _hasNumber,
-                                ),
-                              ),
-                              Expanded(
-                                child: _buildPasswordRequirement(
-                                  'Special Characters',
-                                  _hasSpecialChar,
-                                ),
-                              ),
-                            ],
-                          ),
-                          const Gap(8),
-                          Row(
-                            children: [
-                              Expanded(
-                                child: _buildPasswordRequirement(
-                                  'Password Match',
-                                  _isPasswordMatch,
-                                ),
-                              ),
-                              const Expanded(child: SizedBox()),
-                            ],
-                          ),
-                        ],
+                        ),
                       ),
                     ],
                   ),
                 ),
 
-                const Gap(25),
-                const Divider(height: 2),
-                const Gap(25),
-
-                Row(
-                  children: [
-                    const Text(
-                      'Connect Mail',
-                      style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                        color: Color(0xFF1F2937),
+                AnimatedContainer(
+                  duration: const Duration(milliseconds: 500),
+                  margin: EdgeInsets.only(top: isPasswordValid ? 0 : 25),
+                  child: Column(
+                    children: [
+                      const Divider(height: 2),
+                      const Gap(25),
+                      Row(
+                        children: [
+                          const Text(
+                            'Connect Mail',
+                            style: TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                              color: Color(0xFF1F2937),
+                            ),
+                          ),
+                          const Gap(8),
+                          Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 8,
+                              vertical: 4,
+                            ),
+                            decoration: BoxDecoration(
+                              color:
+                                  _isGmailConnected
+                                      ? Colors.transparent
+                                      : const Color(0xFFFFEBEB),
+                              borderRadius: BorderRadius.circular(4),
+                            ),
+                            child:
+                                _isGmailConnected
+                                    ? const SizedBox.shrink()
+                                    : const Text(
+                                      'Required',
+                                      style: TextStyle(
+                                        color: Color(0xFFDC2626),
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.w600,
+                                      ),
+                                    ),
+                          ),
+                        ],
                       ),
-                    ),
-                    const Gap(8),
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 8,
-                        vertical: 4,
-                      ),
-                      decoration: BoxDecoration(
-                        color:
-                            _isGmailConnected
-                                ? Colors.transparent
-                                : const Color(0xFFFFEBEB),
-                        borderRadius: BorderRadius.circular(4),
-                      ),
-                      child:
-                          _isGmailConnected
-                              ? const SizedBox.shrink()
-                              : const Text(
-                                'Required',
-                                style: TextStyle(
-                                  color: Color(0xFFDC2626),
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.w600,
-                                ),
-                              ),
-                    ),
-                  ],
+                      const Gap(16),
+                      const Gap(16),
+                      _buildGmailButton(),
+                    ],
+                  ),
                 ),
-                const Gap(16),
-                const Gap(16),
-                _buildGmailButton(),
               ],
             ),
           ),
