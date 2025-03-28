@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
 import 'package:uncold_ai_moc/widgets/sign-in/bottom_button.dart';
 import 'package:uncold_ai_moc/widgets/sign-in/step_header.dart';
+import 'package:uncold_ai_moc/providers/gmail_provider.dart';
 
 class AdditionalSettingStep extends ConsumerStatefulWidget {
   final VoidCallback onNext;
@@ -151,18 +152,55 @@ class _AdditionalSettingStepState extends ConsumerState<AdditionalSettingStep>
     });
   }
 
+  // 구글 연동 처리 => 변수로 가정
   Future<void> _handleGmailConnection() async {
+    const String verifiedEmail = 'augusstt06@gmail.com';
+    const String verifiedName = '김충연';
+
+    final gmailService = ref.read(gmailServiceProvider);
+
     setState(() {
       _isGmailLoading = true;
     });
 
-    await Future.delayed(const Duration(milliseconds: 1500));
+    try {
+      print('Gmail 연동 시도: $verifiedEmail ($verifiedName)'); // 연동 시도 로그
 
-    setState(() {
-      _isGmailLoading = false;
-      _isGmailComplete = true;
-      _isGmailConnected = true;
-    });
+      final result = await gmailService.connectGmail(
+        email: verifiedEmail,
+        name: verifiedName,
+      );
+
+      // 연동 결과 상세 출력
+      print('===== Gmail 연동 결과 =====');
+      print('성공 여부: ${result.isSuccess}');
+      print('액세스 토큰: ${result.accessToken}');
+      if (result.errorMessage != null) {
+        print('에러 메시지: ${result.errorMessage}');
+      }
+      print('========================');
+
+      if (result.isSuccess) {
+        // 연동 성공 시 상태 확인
+        final status = await gmailService.checkConnectionStatus();
+        print('현재 연동 상태: $status');
+
+        setState(() {
+          _isGmailLoading = false;
+          _isGmailComplete = true;
+          _isGmailConnected = true;
+        });
+      } else {
+        setState(() {
+          _isGmailLoading = false;
+        });
+      }
+    } catch (e) {
+      print('Gmail 연동 중 에러 발생: $e'); // 에러 로그
+      setState(() {
+        _isGmailLoading = false;
+      });
+    }
   }
 
   @override
