@@ -151,31 +151,27 @@ class _AdditionalSettingStepState extends ConsumerState<AdditionalSettingStep>
                                     _hasMinLength &&
                                     _hasSpecialChar &&
                                     _isPasswordMatch
-                                ? const Color(0xFFF0FDF4) // 연한 초록색
-                                : const Color(0xFFFFEBEB), // 연한 빨간색
+                                ? Colors.transparent
+                                : const Color(
+                                  0xFFFFEBEB,
+                                ), // required 상태일 때만 배경색
                         borderRadius: BorderRadius.circular(4),
                       ),
-                      child: Text(
-                        _hasUpperCase &&
-                                _hasNumber &&
-                                _hasMinLength &&
-                                _hasSpecialChar &&
-                                _isPasswordMatch
-                            ? 'Complete'
-                            : 'Required',
-                        style: TextStyle(
-                          color:
-                              _hasUpperCase &&
-                                      _hasNumber &&
-                                      _hasMinLength &&
-                                      _hasSpecialChar &&
-                                      _isPasswordMatch
-                                  ? const Color(0xFF22C55E) // 초록색
-                                  : const Color(0xFFDC2626), // 빨간색
-                          fontSize: 12,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
+                      child:
+                          _hasUpperCase &&
+                                  _hasNumber &&
+                                  _hasMinLength &&
+                                  _hasSpecialChar &&
+                                  _isPasswordMatch
+                              ? const SizedBox.shrink() // 조건 만족하면 아무것도 표시 안 함
+                              : const Text(
+                                'Required',
+                                style: TextStyle(
+                                  color: Color(0xFFDC2626),
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
                     ),
                   ],
                 ),
@@ -400,73 +396,25 @@ class _AdditionalSettingStepState extends ConsumerState<AdditionalSettingStep>
                       decoration: BoxDecoration(
                         color:
                             _isGmailConnected
-                                ? const Color(0xFFF0FDF4) // 연한 초록색
-                                : const Color(0xFFFFEBEB), // 연한 빨간색
+                                ? Colors.transparent
+                                : const Color(0xFFFFEBEB),
                         borderRadius: BorderRadius.circular(4),
                       ),
-                      child: Text(
-                        _isGmailConnected ? 'Complete' : 'Required',
-                        style: TextStyle(
-                          color:
-                              _isGmailConnected
-                                  ? const Color(0xFF22C55E) // 초록색
-                                  : const Color(0xFFDC2626), // 빨간색
-                          fontSize: 12,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
+                      child:
+                          _isGmailConnected
+                              ? const SizedBox.shrink()
+                              : const Text(
+                                'Required',
+                                style: TextStyle(
+                                  color: Color(0xFFDC2626),
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
                     ),
                   ],
                 ),
                 const Gap(16),
-                // Container(
-                //   padding: const EdgeInsets.all(16),
-                //   decoration: BoxDecoration(
-                //     color:
-                //         _isGmailConnected
-                //             ? const Color(0xFFF0FDF4)
-                //             : const Color(0xFFFFEBEB),
-                //     borderRadius: BorderRadius.circular(8),
-                //     border: Border.all(
-                //       color:
-                //           _isGmailConnected
-                //               ? const Color(0xFF22C55E)
-                //               : const Color(0xFFDC2626),
-                //       width: 1,
-                //     ),
-                //   ),
-                //   child: Row(
-                //     children: [
-                //       Icon(
-                //         _isGmailConnected
-                //             ? Icons.check_circle
-                //             : Icons.warning_rounded,
-                //         color:
-                //             _isGmailConnected
-                //                 ? const Color(0xFF22C55E)
-                //                 : const Color(0xFFDC2626),
-                //         size: 20,
-                //       ),
-                //       const Gap(12),
-                //       Expanded(
-                //         child: Text(
-                //           _isGmailConnected
-                //               ? 'Gmail account successfully connected!'
-                //               : 'Gmail connection is required',
-                //           style: TextStyle(
-                //             color:
-                //                 _isGmailConnected
-                //                     ? const Color(0xFF22C55E)
-                //                     : const Color(0xFFDC2626),
-                //             fontSize: 14,
-                //             fontWeight: FontWeight.w500,
-                //             height: 1.5,
-                //           ),
-                //         ),
-                //       ),
-                //     ],
-                //   ),
-                // ),
                 const Gap(16),
                 _buildGmailButton(),
               ],
@@ -528,13 +476,13 @@ class _AdditionalSettingStepState extends ConsumerState<AdditionalSettingStep>
         child: ElevatedButton.icon(
           onPressed: null,
           style: ElevatedButton.styleFrom(
-            backgroundColor: const Color(0xFF4ADE80),
+            backgroundColor: const Color(0xFF16A34A),
             foregroundColor: Colors.white,
             padding: const EdgeInsets.symmetric(vertical: 12),
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(8),
             ),
-            disabledBackgroundColor: const Color(0xFF4ADE80),
+            disabledBackgroundColor: const Color(0xFF16A34A),
             disabledForegroundColor: Colors.white,
           ),
           icon: const Icon(Icons.check_circle),
