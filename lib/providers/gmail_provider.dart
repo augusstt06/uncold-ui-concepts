@@ -1,9 +1,10 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:uncold_ai_moc/interfaces/gmail_service_interface.dart';
-import 'package:uncold_ai_moc/services/gmail/moc_service.dart';
+// import 'package:uncold_ai_moc/services/gmail/moc_service.dart';
+import 'package:uncold_ai_moc/services/gmail/gmail_service.dart';
 
 final gmailServiceProvider = Provider<GmailServiceInterface>((ref) {
-  return MockGmailService();
+  return GmailService();
 });
 
 final gmailConnectionStatusProvider = StreamProvider<GmailConnectionStatus>((
