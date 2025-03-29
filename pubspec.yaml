@@ -1,5 +1,5 @@
-name: uncold_ai_moc
-description: "A new Flutter project."
+name: uncold_ai
+description: "An app that helps you easily nurture using OCR and LLM"
 publish_to: "none"
 
 version: 1.0.0+1

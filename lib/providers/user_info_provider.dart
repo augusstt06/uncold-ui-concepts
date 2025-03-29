@@ -1,5 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:uncold_ai_moc/models/user_info.dart';
+import 'package:uncold_ai/models/user_info.dart';
 
 final userInfoProvider = StateProvider<UserInfo>((ref) {
   return const UserInfo(

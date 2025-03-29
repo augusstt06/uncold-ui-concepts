@@ -1,4 +1,4 @@
-package com.example.uncold_ai_moc
+package ai.uncold.app
 
 import io.flutter.embedding.android.FlutterActivity
 

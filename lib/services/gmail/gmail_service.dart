@@ -1,6 +1,6 @@
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:uncold_ai_moc/interfaces/gmail_service_interface.dart';
-import 'package:uncold_ai_moc/models/user_info.dart';
+import 'package:uncold_ai/interfaces/gmail_service_interface.dart';
+import 'package:uncold_ai/models/user_info.dart';
 
 class GmailService implements GmailServiceInterface {
   final GoogleSignIn _googleSignIn = GoogleSignIn(

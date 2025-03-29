@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
-import 'package:uncold_ai_moc/screens/sign-in/steps/scan_processing.dart';
-import 'package:uncold_ai_moc/widgets/sign-in/bottom_button.dart';
-import 'package:uncold_ai_moc/widgets/sign-in/step_header.dart';
+import 'package:uncold_ai/screens/sign-in/steps/scan_processing.dart';
+import 'package:uncold_ai/widgets/sign-in/bottom_button.dart';
+import 'package:uncold_ai/widgets/sign-in/step_header.dart';
 
 class CaptureBusinessCardStep extends StatefulWidget {
   final VoidCallback onNext;

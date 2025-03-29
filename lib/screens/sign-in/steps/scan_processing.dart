@@ -23,7 +23,6 @@ class _ScanProcessingStepState extends State<ScanProcessingStep>
   String currentStage = 'research';
   bool showCompletionIcon = false;
 
-  // 각 단계별 상태 관리
   final Map<String, String> stageLabels = {
     'research': 'uncold.ai is looking at the business card',
     'generation': 'Content organized by uncold.ai',
@@ -33,7 +32,6 @@ class _ScanProcessingStepState extends State<ScanProcessingStep>
   late AnimationController _pulseController;
   late Animation<double> _pulseAnimation;
 
-  // 상수 정의
   static const double kIconContainerSize = 64.0;
   static const double kIconSize = 28.0;
   static const double kStageIndicatorSize = 32.0;

@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:uncold_ai_moc/screens/sign-in/steps/verify_information.dart';
-import 'package:uncold_ai_moc/screens/sign-in/steps/capture_business_card.dart';
-import 'package:uncold_ai_moc/screens/sign-in/steps/additional_setting.dart';
+import 'package:uncold_ai/screens/sign-in/steps/verify_information.dart';
+import 'package:uncold_ai/screens/sign-in/steps/capture_business_card.dart';
+import 'package:uncold_ai/screens/sign-in/steps/additional_setting.dart';
 
 final signInStepProvider = StateProvider<int>((ref) => 0);
 

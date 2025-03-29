@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:uncold_ai_moc/widgets/sign-in/progress.dart';
+import 'package:uncold_ai/widgets/sign-in/progress.dart';
 
 class StepHeader extends StatelessWidget {
   final String title;
@@ -20,7 +20,6 @@ class StepHeader extends StatelessWidget {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        // 뒤로가기와 프로그레스바를 포함하는 상단 Row
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 4),
           child: Row(
@@ -36,12 +35,11 @@ class StepHeader extends StatelessWidget {
                   width: double.infinity,
                 ),
               ),
-              const SizedBox(width: 48), // 좌우 대칭을 위한 여백
+              const SizedBox(width: 48),
             ],
           ),
         ),
         const SizedBox(height: 16),
-        // 스텝 제목
         Text(
           title,
           style: const TextStyle(fontSize: 25, fontWeight: FontWeight.w800),

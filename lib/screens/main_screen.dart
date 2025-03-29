@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:gap/gap.dart';
-import 'package:uncold_ai_moc/routes/app_router.gr.dart';
+import 'package:uncold_ai/routes/app_router.gr.dart';
 
 @RoutePage()
 class MainScreen extends StatefulWidget {

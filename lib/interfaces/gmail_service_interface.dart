@@ -1,4 +1,4 @@
-import 'package:uncold_ai_moc/models/user_info.dart';
+import 'package:uncold_ai/models/user_info.dart';
 
 enum GmailConnectionStatus { notConnected, connecting, connected, error }
 

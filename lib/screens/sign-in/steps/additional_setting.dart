@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
-import 'package:uncold_ai_moc/widgets/sign-in/bottom_button.dart';
-import 'package:uncold_ai_moc/widgets/sign-in/step_header.dart';
-import 'package:uncold_ai_moc/providers/gmail_provider.dart';
+import 'package:uncold_ai/widgets/sign-in/bottom_button.dart';
+import 'package:uncold_ai/widgets/sign-in/step_header.dart';
+import 'package:uncold_ai/providers/gmail_provider.dart';
 
 class AdditionalSettingStep extends ConsumerStatefulWidget {
   final VoidCallback onNext;
@@ -152,7 +152,6 @@ class _AdditionalSettingStepState extends ConsumerState<AdditionalSettingStep>
     });
   }
 
-  // 구글 연동 처리 => 변수로 가정
   Future<void> _handleGmailConnection() async {
     const String verifiedEmail = 'augusstt06@gmail.com';
     const String verifiedName = '김충연';
@@ -164,14 +163,13 @@ class _AdditionalSettingStepState extends ConsumerState<AdditionalSettingStep>
     });
 
     try {
-      print('Gmail 연동 시도: $verifiedEmail ($verifiedName)'); // 연동 시도 로그
+      print('Gmail 연동 시도: $verifiedEmail ($verifiedName)');
 
       final result = await gmailService.connectGmail(
         email: verifiedEmail,
         name: verifiedName,
       );
 
-      // 연동 결과 상세 출력
       print('===== Gmail 연동 결과 =====');
       print('성공 여부: ${result.isSuccess}');
       print('액세스 토큰: ${result.accessToken}');
@@ -181,7 +179,6 @@ class _AdditionalSettingStepState extends ConsumerState<AdditionalSettingStep>
       print('========================');
 
       if (result.isSuccess) {
-        // 연동 성공 시 상태 확인
         final status = await gmailService.checkConnectionStatus();
         print('현재 연동 상태: $status');
 
@@ -196,7 +193,7 @@ class _AdditionalSettingStepState extends ConsumerState<AdditionalSettingStep>
         });
       }
     } catch (e) {
-      print('Gmail 연동 중 에러 발생: $e'); // 에러 로그
+      print('Gmail 연동 중 에러 발생: $e');
       setState(() {
         _isGmailLoading = false;
       });

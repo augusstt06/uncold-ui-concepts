@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
-import 'package:uncold_ai_moc/widgets/sign-in/bottom_button.dart';
-import 'package:uncold_ai_moc/widgets/sign-in/step_header.dart';
+import 'package:uncold_ai/widgets/sign-in/bottom_button.dart';
+import 'package:uncold_ai/widgets/sign-in/step_header.dart';
 
 class VerifyInformationStep extends StatelessWidget {
   final VoidCallback onNext;
